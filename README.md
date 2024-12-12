@@ -87,6 +87,39 @@ This repository is tailored for data engineers looking to explore, learn, and im
 
 ## **Getting Started**
 
+### Setup Virtual Environment
+
+1. Create a virtual environment:
+```bash
+python -m venv venv
+```
+
+2. Activate the virtual environment:
+- On macOS/Linux:
+```bash
+source venv/bin/activate
+```
+- On Windows:
+```bash
+.\venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Running Examples
+
+Navigate to specific topic directories and run the Python scripts. For example:
+```bash
+# Run data format examples
+python data_formats_and_storage/format_examples.py
+
+# Run format conversion examples
+python data_formats_and_storage/format_conversions.py
+```
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/Murtaza-arif/all-you-need-to-know-for-data-engineer.git
