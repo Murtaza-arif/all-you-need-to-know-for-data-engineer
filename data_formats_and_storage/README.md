@@ -1,6 +1,6 @@
 # Data Formats and Storage
 
-This section demonstrates handling various data formats commonly used in data engineering and shows how to convert between different formats.
+This directory contains examples and case studies of different data formats and storage patterns commonly used in data engineering.
 
 ## Contents
 
@@ -16,6 +16,104 @@ This section demonstrates handling various data formats commonly used in data en
    - JSON to CSV
    - CSV to Avro
    - JSON to Parquet
+
+3. E-commerce Database Schema Case Study
+
+## E-commerce Database Schema Case Study
+
+This case study demonstrates the implementation of both Star and Snowflake schemas for an e-commerce platform, showcasing different approaches to data warehouse design.
+
+### Files Structure
+
+- [`ecommerce_snowflake_schema.dbml`](./ecommerce_snowflake_schema.dbml): Snowflake schema implementation
+- [`ecommerce_star_schema.dbml`](./ecommerce_star_schema.dbml): Star schema implementation
+- [`schema_comparison.md`](./schema_comparison.md): Detailed comparison between both schemas
+
+### Schema Visualizations
+
+- [Snowflake Schema Diagram](https://dbdocs.io/Murtaza-arif/snowflake_ecommerce_schema?view=relationships)
+- [Star Schema Diagram](https://dbdocs.io/Murtaza-arif/star_ecommerce_schema?view=relationships)
+
+### Key Features
+
+1. **Snowflake Schema**
+   - Highly normalized dimension tables
+   - Better data integrity
+   - Reduced data redundancy
+   - Suitable for OLTP workloads
+   - Complex queries with multiple joins
+
+2. **Star Schema**
+   - Denormalized dimension tables
+   - Optimized for analytics
+   - Faster query performance
+   - Suitable for OLAP workloads
+   - Simpler queries with fewer joins
+
+### Implementation Details
+
+Both schemas are implemented using DBML (Database Markup Language) and include:
+
+1. **Fact Tables**
+   - Sales/Orders tracking
+   - Inventory management
+
+2. **Dimension Tables**
+   - Product information
+   - Customer data
+   - Location/Geography
+   - Time dimension
+   - Additional reference data
+
+3. **Best Practices**
+   - Proper indexing strategies
+   - Referential integrity
+   - Audit columns
+   - Comprehensive documentation
+
+### Use Cases
+
+The case study demonstrates how to model common e-commerce scenarios:
+
+1. **Sales Analysis**
+   - Revenue tracking
+   - Product performance
+   - Customer behavior
+
+2. **Inventory Management**
+   - Stock levels
+   - Reorder points
+   - Warehouse operations
+
+3. **Customer Analytics**
+   - Segmentation
+   - Purchase patterns
+   - Geographic distribution
+
+### Learning Outcomes
+
+Through this case study, you'll learn:
+
+1. **Schema Design**
+   - When to use Star vs Snowflake schemas
+   - Trade-offs between normalization and performance
+   - Best practices for data warehouse design
+
+2. **Data Modeling**
+   - Fact table design
+   - Dimension table modeling
+   - Handling hierarchies
+
+3. **Performance Optimization**
+   - Indexing strategies
+   - Query optimization
+   - Storage efficiency
+
+### Tools Used
+
+- DBML for schema definition
+- dbdiagram.io for visualization
+- PostgreSQL as the target database
 
 ## Requirements
 pandas
@@ -49,3 +147,16 @@ python format_examples.py
 ```bash
 python format_conversions.py
 ```
+
+## Getting Started
+
+1. Review the schema files (`.dbml` files)
+2. Check the visual representations using the provided links
+3. Read the detailed comparison in `schema_comparison.md`
+4. Understand the trade-offs and best practices
+
+## Additional Resources
+
+- [DBML Documentation](https://dbml.dbdiagram.io/docs/)
+- [Data Warehouse Design Best Practices](https://docs.microsoft.com/en-us/azure/architecture/data-guide/relational-data/data-warehousing)
+- [Star Schema vs Snowflake Schema](https://www.vertabelo.com/blog/data-warehouse-modeling-star-schema-vs-snowflake-schema/)

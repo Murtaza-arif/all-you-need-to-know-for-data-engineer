@@ -1,0 +1,190 @@
+// E-commerce Platform Star Schema
+Project star_ecommerce_schema {
+  database_type: 'PostgreSQL'
+  Note: '''
+    # E-commerce Star Schema Design
+
+    ## Overview
+    This schema implements a star design for an e-commerce platform, optimized for analytical (OLAP) operations.
+    The star schema is denormalized for simpler queries and faster analytical processing.
+
+    ## Schema Components
+
+    ### Fact Tables
+    - **fact_sales**: Central fact table for sales transactions
+    - **fact_inventory**: Inventory snapshots
+
+    ### Dimension Tables
+    - **dim_product**: Denormalized product information including category and brand
+    - **dim_customer**: Customer information with segment
+    - **dim_location**: Geographic hierarchy in one table
+    - **dim_date**: Time dimension for temporal analysis
+    - **dim_supplier**: Supplier information
+
+    ## Key Features
+    - Denormalized for query simplicity
+    - Optimized for OLAP operations
+    - Reduced number of joins needed
+    - Suitable for data warehouse implementation
+
+    ## Common Analytics Use Cases
+    1. Sales performance analysis
+    2. Customer behavior analysis
+    3. Inventory management
+    4. Geographic analysis
+    5. Time-based reporting
+  '''
+}
+
+// Fact Tables
+Table fact_sales {
+  sale_id int [pk]
+  order_date_id int [ref: > dim_date.date_id]
+  customer_id int [ref: > dim_customer.customer_id]
+  product_id int [ref: > dim_product.product_id]
+  location_id int [ref: > dim_location.location_id]
+  quantity int
+  unit_price decimal
+  discount_amount decimal
+  total_amount decimal
+  shipping_cost decimal
+  tax_amount decimal
+  order_status varchar
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (order_date_id) [name: 'idx_sales_date']
+    (customer_id) [name: 'idx_sales_customer']
+    (product_id) [name: 'idx_sales_product']
+    (location_id) [name: 'idx_sales_location']
+  }
+}
+
+Table fact_inventory {
+  inventory_id int [pk]
+  product_id int [ref: > dim_product.product_id]
+  supplier_id int [ref: > dim_supplier.supplier_id]
+  date_id int [ref: > dim_date.date_id]
+  location_id int [ref: > dim_location.location_id]
+  quantity_on_hand int
+  quantity_received int
+  quantity_shipped int
+  reorder_point int
+  unit_cost decimal
+  total_value decimal
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (product_id) [name: 'idx_inventory_product']
+    (date_id) [name: 'idx_inventory_date']
+    (location_id) [name: 'idx_inventory_location']
+  }
+}
+
+// Dimension Tables
+Table dim_product {
+  product_id int [pk]
+  product_name varchar
+  product_description text
+  category_name varchar
+  category_description text
+  department_name varchar
+  brand_name varchar
+  manufacturer_name varchar
+  unit_cost decimal
+  unit_price decimal
+  weight decimal
+  dimensions varchar
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (product_name) [name: 'idx_product_name']
+    (category_name) [name: 'idx_product_category']
+    (brand_name) [name: 'idx_product_brand']
+  }
+}
+
+Table dim_customer {
+  customer_id int [pk]
+  first_name varchar
+  last_name varchar
+  email varchar
+  phone varchar
+  segment_name varchar
+  segment_description text
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (email) [name: 'idx_customer_email']
+    (segment_name) [name: 'idx_customer_segment']
+  }
+}
+
+Table dim_location {
+  location_id int [pk]
+  address_line1 varchar
+  address_line2 varchar
+  city varchar
+  state_province varchar
+  postal_code varchar
+  country_name varchar
+  region_name varchar
+  is_warehouse boolean
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (country_name) [name: 'idx_location_country']
+    (region_name) [name: 'idx_location_region']
+    (postal_code) [name: 'idx_location_postal']
+  }
+}
+
+Table dim_date {
+  date_id int [pk]
+  full_date date
+  day_of_week int
+  day_name varchar
+  day_of_month int
+  day_of_year int
+  week_of_year int
+  month_number int
+  month_name varchar
+  quarter int
+  year int
+  is_weekend boolean
+  is_holiday boolean
+  season varchar
+
+  indexes {
+    (full_date) [name: 'idx_date_full']
+    (year, month_number) [name: 'idx_date_year_month']
+  }
+}
+
+Table dim_supplier {
+  supplier_id int [pk]
+  supplier_name varchar
+  contact_name varchar
+  email varchar
+  phone varchar
+  address_line1 varchar
+  address_line2 varchar
+  city varchar
+  state_province varchar
+  postal_code varchar
+  country_name varchar
+  rating int
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (supplier_name) [name: 'idx_supplier_name']
+    (rating) [name: 'idx_supplier_rating']
+  }
+}

@@ -1,0 +1,245 @@
+// E-commerce Platform Snowflake Schema
+// Fact Tables
+Project snowflake_ecommerce_schema {
+  database_type: 'PostgreSQL'
+  Note: '''
+    # E-commerce Snowflake Schema Design
+
+    ## Overview
+    This schema implements a snowflake design for an e-commerce platform, optimized for both analytical (OLAP) and transactional (OLTP) operations.
+
+    ## Schema Components
+
+    ### Fact Tables
+    - **fact_orders**: Central fact table for order transactions
+    - **fact_order_items**: Detailed order line items
+    - **fact_inventory**: Inventory tracking and management
+
+    ### Primary Dimensions
+    - **dim_product**: Product information with hierarchical relationships
+    - **dim_customer**: Customer profiles and demographics
+    - **dim_location**: Geographic and address information
+    - **dim_date**: Time dimension for temporal analysis
+
+    ### Supporting Dimensions
+    - Categories (hierarchical)
+    - Brands and Manufacturers
+    - Warehouses and Suppliers
+    - Customer Segments
+    - Regions and Countries
+
+    ## Key Features
+    - Normalized dimension tables for data integrity
+    - Comprehensive indexing strategy
+    - Audit columns (created_at, updated_at)
+    - Full referential integrity
+    - Support for hierarchical relationships
+
+    ## Common Analytics Use Cases
+    1. Sales analysis by product hierarchy
+    2. Customer segmentation and behavior analysis
+    3. Inventory optimization
+    4. Geographic sales patterns
+    5. Supply chain efficiency metrics
+    6. Time-based trend analysis
+
+    ## Best Practices
+    - Use appropriate data types
+    - Follow naming conventions
+    - Implement proper indexing
+    - Maintain referential integrity
+  '''
+}
+Table fact_orders {
+  order_id int [pk]
+  customer_id int [ref: > dim_customer.customer_id]
+  order_date_id int [ref: > dim_date.date_id]
+  shipping_address_id int [ref: > dim_location.location_id]
+  billing_address_id int [ref: > dim_location.location_id]
+  order_status_id int [ref: > dim_order_status.status_id]
+  total_amount decimal
+  shipping_cost decimal
+  tax_amount decimal
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    customer_id [name: 'idx_orders_customer']
+    order_date_id [name: 'idx_orders_date']
+  }
+}
+
+Table fact_order_items {
+  order_item_id int [pk]
+  order_id int [ref: > fact_orders.order_id]
+  product_id int [ref: > dim_product.product_id]
+  quantity int
+  unit_price decimal
+  discount_amount decimal
+  total_price decimal
+  created_at timestamp
+
+  indexes {
+    product_id [name: 'idx_order_items_product']
+  }
+}
+
+Table fact_inventory {
+  inventory_id int [pk]
+  product_id int [ref: > dim_product.product_id]
+  warehouse_id int [ref: > dim_warehouse.warehouse_id]
+  supplier_id int [ref: > dim_supplier.supplier_id]
+  quantity_on_hand int
+  reorder_point int
+  last_stock_update_date_id int [ref: > dim_date.date_id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    product_id [name: 'idx_inventory_product']
+  }
+}
+
+// Dimension Tables
+
+Table dim_product {
+  product_id int [pk]
+  product_name varchar
+  category_id int [ref: > dim_category.category_id]
+  brand_id int [ref: > dim_brand.brand_id]
+  unit_cost decimal
+  unit_price decimal
+  weight decimal
+  dimensions varchar
+  description text
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    category_id [name: 'idx_product_category']
+    brand_id [name: 'idx_product_brand']
+  }
+}
+
+Table dim_category {
+  category_id int [pk]
+  parent_category_id int [ref: > dim_category.category_id]
+  category_name varchar
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_brand {
+  brand_id int [pk]
+  brand_name varchar
+  manufacturer_id int [ref: > dim_manufacturer.manufacturer_id]
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_manufacturer {
+  manufacturer_id int [pk]
+  manufacturer_name varchar
+  country_id int [ref: > dim_country.country_id]
+  contact_info text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_customer {
+  customer_id int [pk]
+  first_name varchar
+  last_name varchar
+  email varchar
+  phone varchar
+  customer_segment_id int [ref: > dim_customer_segment.segment_id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_customer_segment {
+  segment_id int [pk]
+  segment_name varchar
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_location {
+  location_id int [pk]
+  address_line1 varchar
+  address_line2 varchar
+  city varchar
+  state_province varchar
+  postal_code varchar
+  country_id int [ref: > dim_country.country_id]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    country_id [name: 'idx_location_country']
+  }
+}
+
+Table dim_country {
+  country_id int [pk]
+  country_name varchar
+  country_code varchar
+  region_id int [ref: > dim_region.region_id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_region {
+  region_id int [pk]
+  region_name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_warehouse {
+  warehouse_id int [pk]
+  warehouse_name varchar
+  location_id int [ref: > dim_location.location_id]
+  capacity decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_supplier {
+  supplier_id int [pk]
+  supplier_name varchar
+  contact_name varchar
+  email varchar
+  phone varchar
+  location_id int [ref: > dim_location.location_id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table dim_date {
+  date_id int [pk]
+  full_date date
+  day_of_week int
+  day_name varchar
+  day_of_month int
+  day_of_year int
+  week_of_year int
+  month_number int
+  month_name varchar
+  quarter int
+  year int
+  is_weekend boolean
+  is_holiday boolean
+}
+
+Table dim_order_status {
+  status_id int [pk]
+  status_name varchar
+  description text
+  created_at timestamp
+  updated_at timestamp
+}
