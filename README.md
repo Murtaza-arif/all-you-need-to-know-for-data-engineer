@@ -37,8 +37,10 @@ This repository is tailored for data engineers looking to explore, learn, and im
 - Examples of data format conversions.
 
 ### 2. Data Ingestion
-- Batch and streaming data ingestion pipelines.
-- Tools: Apache Kafka, AWS Kinesis, Google Pub/Sub.
+- Batch data ingestion pipelines.
+- Using tools like Apache spark, AWS S3, or Python scripts to ingest data.
+- Stream Data Processing
+- Using tools like Apache Kafka, AWS Kinesis or Google Pub/Sub.
 
 ### 3. Data Transformation and Cleaning
 - ETL/ELT pipelines with Apache Airflow, AWS Glue, or Python.
