@@ -1,9 +1,11 @@
 # Batch Data Ingestion Pipeline
 
-A robust ETL pipeline that extracts data from MySQL, performs complex transformations using PySpark, and loads the results into Amazon S3.
+A robust ETL pipeline that extracts data from MySQL, performs complex transformations using PySpark, and loads the results into Amazon S3. The pipeline runs on a distributed Spark cluster managed by Docker Compose.
 
 ## Features
 
+- Distributed Spark cluster with master and worker nodes
+- Containerized MySQL database
 - Extracts data from MySQL tables
 - Performs complex inventory analytics using PySpark UDFs
 - Calculates business insights including:
@@ -14,39 +16,8 @@ A robust ETL pipeline that extracts data from MySQL, performs complex transforma
 
 ## Prerequisites
 
-- Python 3.8+
-- MySQL Server
+- Docker and Docker Compose
 - AWS Account with S3 access
-- Apache Spark
-
-## Installation
-
-1. Clone the repository
-2. Create a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-3. Install the package in development mode:
-   ```bash
-   pip install -e .
-   ```
-
-## Configuration
-
-Create a `.env` file with the following variables:
-
-```env
-MYSQL_HOST=your_mysql_host
-MYSQL_PORT=your_mysql_port
-MYSQL_DATABASE=your_database
-MYSQL_USER=your_username
-MYSQL_PASSWORD=your_password
-S3_BUCKET=your_s3_bucket
-AWS_REGION=your_aws_region
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-```
 
 ## Project Structure
 
@@ -58,11 +29,143 @@ batch_data_ingestion/
 │   └── advanced_transformations.py  # Complex data transformations
 ├── init/
 │   └── 02_additional_tables.sql     # SQL initialization scripts
-├── setup.py                   # Package setup file
-├── requirements.txt           # Python dependencies
-├── .env                      # Environment variables
-└── run_pipeline.py           # Pipeline execution script
+├── spark-cluster/            # Spark cluster configuration
+│   ├── docker-compose.yml    # Defines Spark master and worker services
+│   └── spark-defaults.conf   # Spark configuration parameters
+├── docker-compose.yml        # MySQL service configuration
+├── download_jars.sh         # Downloads required JARs (MySQL connector, etc.)
+├── submit-job.sh            # Script to submit Spark job to the cluster
+├── requirements.txt         # Python dependencies
+└── .env                     # Environment variables
 ```
+
+## Spark Cluster Setup
+
+The Spark cluster consists of one master node and two worker nodes, all running in Docker containers. The setup is defined in `spark-cluster/docker-compose.yml`:
+
+```yaml
+services:
+  spark-master:
+    image: bitnami/spark:3.4.1
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - etl_network
+
+  spark-worker-1:
+    image: bitnami/spark:3.4.1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - etl_network
+
+  spark-worker-2:
+    image: bitnami/spark:3.4.1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - etl_network
+```
+
+### Starting the Cluster
+
+1. Start MySQL container:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Start Spark cluster:
+   ```bash
+   cd spark-cluster
+   docker-compose up -d
+   ```
+
+3. Verify cluster status:
+   ```bash
+   docker ps
+   ```
+   You should see three containers running: spark-master, spark-worker-1, and spark-worker-2
+
+## Job Submission
+
+The `submit-job.sh` script handles:
+1. Downloading required JARs (MySQL connector)
+2. Copying files to Spark containers
+3. Setting up environment variables
+4. Submitting the Spark job
+
+### Configuration
+
+Create a `.env` file with:
+```env
+MYSQL_HOST=etl_mysql
+MYSQL_PORT=3306
+MYSQL_DATABASE=ecommerce
+MYSQL_USER=etl_user
+MYSQL_PASSWORD=etl_password
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=your_aws_region
+```
+
+### Running the Job
+
+1. Download required JARs:
+   ```bash
+   ./download_jars.sh
+   ```
+
+2. Submit the Spark job:
+   ```bash
+   ./submit-job.sh
+   ```
+
+The job submission script:
+- Copies MySQL connector and other JARs to all Spark nodes
+- Copies Python source files to the containers
+- Sets up environment variables for MySQL and AWS
+- Submits the job with proper memory and configuration settings
+
+### Monitoring
+
+- Spark UI: http://localhost:8080
+- View logs:
+  ```bash
+  docker logs spark-cluster-spark-master-1
+  docker logs spark-cluster-spark-worker-1-1
+  docker logs spark-cluster-spark-worker-2-1
+  ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. MySQL Connection Issues
+   - Verify MySQL container is running: `docker ps`
+   - Check MySQL logs: `docker logs etl_mysql`
+   - Ensure both MySQL and Spark are on `etl_network`:
+     ```bash
+     docker network inspect etl_network
+     ```
+
+2. Spark Job Failures
+   - Check Spark master logs:
+     ```bash
+     docker logs spark-cluster-spark-master-1
+     ```
+   - Verify JARs are copied:
+     ```bash
+     docker exec spark-cluster-spark-master-1 ls /opt/bitnami/spark/lib/
+     ```
+   - Check environment variables:
+     ```bash
+     docker exec spark-cluster-spark-master-1 env | grep MYSQL
+     ```
 
 ## Usage
 
