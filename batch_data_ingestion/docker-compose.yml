@@ -21,6 +21,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - etl_network
 
 volumes:
   mysql_data:
+
+networks:
+  etl_network:
+    name: etl_network
+    driver: bridge

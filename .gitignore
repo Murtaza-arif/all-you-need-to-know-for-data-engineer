@@ -3,3 +3,8 @@
 *.ipynb_checkpoints
 
 *.env
+
+batch_data_ingestion/lib/*
+
+batch_data_ingestion/jars/*
+*.pyc
