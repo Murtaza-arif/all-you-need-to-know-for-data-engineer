@@ -8,3 +8,5 @@ batch_data_ingestion/lib/*
 
 batch_data_ingestion/jars/*
 *.pyc
+weather_etl/data/*
+weather_etl/logs/*
