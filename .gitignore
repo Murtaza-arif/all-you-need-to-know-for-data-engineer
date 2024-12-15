@@ -10,3 +10,4 @@ batch_data_ingestion/jars/*
 *.pyc
 weather_etl/data/*
 weather_etl/logs/*
+*/**/venv/*

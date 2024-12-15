@@ -47,7 +47,6 @@ This repository is tailored for data engineers looking to explore, learn, and im
 - Data cleaning examples using Pandas and PySpark.
 
 ### 4. Data Storage and Management
-- Relational Databases (MySQL, PostgreSQL) and NoSQL (MongoDB, DynamoDB).
 - Setting up data lakes and data warehouses.
 
 ### 5. Big Data Tools
