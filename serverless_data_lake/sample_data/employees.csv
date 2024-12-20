@@ -1,0 +1,11 @@
+employee_id,first_name,last_name,email,department,salary,hire_date
+1,John,Smith,john.smith@example.com,Engineering,85000,2023-01-15
+2,Sarah,Johnson,sarah.j@example.com,Marketing,75000,2023-02-01
+3,Michael,Brown,m.brown@example.com,Finance,90000,2023-01-10
+4,Emily,Davis,emily.d@example.com,Engineering,82000,2023-03-15
+5,David,Wilson,d.wilson@example.com,HR,70000,2023-02-20
+6,Lisa,Anderson,l.anderson@example.com,Marketing,76000,2023-04-01
+7,James,Taylor,j.taylor@example.com,Engineering,88000,2023-03-01
+8,Emma,Martinez,e.martinez@example.com,Finance,85000,2023-02-15
+9,Robert,Thomas,r.thomas@example.com,HR,72000,2023-01-20
+10,Jennifer,Garcia,j.garcia@example.com,Engineering,86000,2023-04-10

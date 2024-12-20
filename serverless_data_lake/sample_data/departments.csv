@@ -1,0 +1,6 @@
+department_id,department_name,location,manager_id,budget
+1,Engineering,New York,7,1500000
+2,Marketing,San Francisco,2,800000
+3,Finance,Chicago,3,1200000
+4,HR,Boston,5,500000
+5,Sales,Los Angeles,null,1000000

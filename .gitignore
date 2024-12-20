@@ -11,3 +11,5 @@ batch_data_ingestion/jars/*
 weather_etl/data/*
 weather_etl/logs/*
 */**/venv/*
+*.terraform
+*.tfstate

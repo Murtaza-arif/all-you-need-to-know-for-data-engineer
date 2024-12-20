@@ -46,17 +46,8 @@ This repository is tailored for data engineers looking to explore, learn, and im
 - ETL/ELT pipelines with Apache Airflow, AWS Glue, or Python.
 - Data cleaning examples using Pandas and PySpark.
 
-### 4. Data Storage and Management
-- Setting up data lakes and data warehouses.
-
-### 5. Big Data Tools
-- Hadoop Ecosystem: HDFS, MapReduce, Apache Hive.
-- Apache Spark: Batch and streaming examples.
-
 ### 6. Cloud Platforms
 - AWS: S3, Redshift, Glue, Athena.
-- Azure: Data Factory, Synapse Analytics.
-- GCP: BigQuery, Dataflow.
 - Terraform for Infrastructure as Code.
 
 ### 7. DevOps for Data Engineers
