@@ -51,8 +51,7 @@ This repository is tailored for data engineers looking to explore, learn, and im
 - Terraform for Infrastructure as Code.
 
 ### 7. DevOps for Data Engineers
-- CI/CD pipelines for data workflows.
-- Monitoring and logging with CloudWatch, ELK Stack.
+- Monitoring and logging with data drift, ELK Stack.
 
 ### 8. Machine Learning Engineering Integration
 - Data preparation and feature engineering.

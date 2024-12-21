@@ -1,0 +1,29 @@
+groups:
+  - name: stock_pipeline_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(stock_data_fetch_errors_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High error rate in stock data fetching
+          description: The stock data pipeline is experiencing a high error rate (>10% over 5m)
+
+      - alert: DataDriftDetected
+        expr: rate(data_drift_detected_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Data drift detected in stock data
+          description: Significant data drift has been detected in the stock data patterns
+
+      - alert: SlowProcessing
+        expr: histogram_quantile(0.95, rate(stock_data_processing_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Slow data processing detected
+          description: 95th percentile of processing time is above 5 seconds

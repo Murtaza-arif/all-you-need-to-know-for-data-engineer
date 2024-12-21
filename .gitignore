@@ -13,3 +13,4 @@ weather_etl/logs/*
 */**/venv/*
 *.terraform
 *.tfstate
+*/**/.DS_Store
