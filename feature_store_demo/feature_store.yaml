@@ -1,0 +1,14 @@
+project: feature_store_demo
+registry: data/registry.db
+provider: local
+online_store:
+    type: sqlite
+    path: data/online_store.db
+offline_store:
+    type: file
+feature_server:
+    enabled: True
+flags:
+    alpha_features: True
+    on_demand_transforms: True
+entity_key_serialization_version: 2

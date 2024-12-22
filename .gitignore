@@ -14,3 +14,5 @@ weather_etl/logs/*
 *.terraform
 *.tfstate
 */**/.DS_Store
+*/**/*.db
+*/**/*.parquet
