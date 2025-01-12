@@ -1,0 +1,8 @@
+/data/
+/models/
+*.pyc
+.DS_Store
+.dvcignore
+/data
+/models
+.dvc
