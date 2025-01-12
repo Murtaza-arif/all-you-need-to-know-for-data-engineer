@@ -16,3 +16,6 @@ weather_etl/logs/*
 */**/.DS_Store
 */**/*.db
 */**/*.parquet
+*/**/logs/*
+*/**/superset_home/*
+
